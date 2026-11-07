@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>JernihStatus — Kompres Video & Foto untuk Status WhatsApp</title>
+<meta name="description" content="Kompres video dan foto langsung di perangkatmu agar tetap jernih saat diunggah ke Status WhatsApp. Tanpa unggah ke server.">
+<link rel="stylesheet" href="../replica/design/tokens.css">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="appbar">
+  <span class="wordmark">JernihStatus</span>
+  <span class="uses-pill" id="usesPill">Sisa hari ini: 3</span>
+</header>
+
+<main id="main">
+
+  <!-- S01 Home / tool hub -->
+  <section class="screen" id="screen-home">
+    <h1>Status tajam, tanpa buram.</h1>
+    <p class="lede">Kompres video dan fotomu di perangkat ini juga — persis di
+      bawah batas yang dipakai WhatsApp — supaya Status tidak dihancurkan
+      kompres ulang. Tidak ada berkas yang diunggah ke mana pun.</p>
+
+    <div class="tool-list">
+      <button class="tool-card" data-goto="video">
+        <span class="tool-title">Kompres Video</span>
+        <span class="tool-desc">Video HD jadi siap Status, tetap jernih.</span>
+      </button>
+      <button class="tool-card" data-goto="photo">
+        <span class="tool-title">Foto HD</span>
+        <span class="tool-desc">Foto dipertajam jadi HD — tetap berupa foto.</span>
+      </button>
+      <button class="tool-card" data-goto="split">
+        <span class="tool-title">Potong 30 Detik</span>
+        <span class="tool-desc">Video panjang dipecah jadi bagian-bagian Status.</span>
+      </button>
+    </div>
+    <p class="fineprint">Gratis 3 kali proses per hari. Semua pemrosesan
+      terjadi di browser ini; berkasmu tidak pernah meninggalkan perangkat.</p>
+  </section>
+
+  <!-- S03/S06/S07 workspace (picker + setup + processing + result) -->
+  <section class="screen" id="screen-tool" hidden>
+    <button class="btn ghost back-btn" id="backBtn">&larr; Kembali</button>
+    <h2 id="toolTitle">Kompres Video</h2>
+
+    <div class="picker" id="pickerBox">
+      <label class="picker-label" for="fileInput" id="pickerLabel">Pilih video dari perangkat</label>
+      <input type="file" id="fileInput" accept="video/*">
+      <p class="picker-file" id="pickerFile" hidden></p>
+    </div>
+
+    <div id="setupBox" hidden>
+      <div class="preview-wrap">
+        <video id="previewVideo" controls playsinline muted hidden></video>
+        <img id="previewImg" alt="Pratinjau foto yang dipilih" hidden>
+      </div>
+      <p class="file-info" id="fileInfo"></p>
+
+      <fieldset class="aspect-box" id="aspectBox">
+        <legend>Rasio aspek</legend>
+        <div class="segmented" role="radiogroup" aria-label="Rasio aspek">
+          <label class="seg">
+            <input type="radio" name="aspect" value="original" checked>
+            <span>Original</span>
+          </label>
+          <label class="seg">
+            <input type="radio" name="aspect" value="916">
+            <span>9:16</span>
+          </label>
+        </div>
+        <p class="hint">Original = ukuran asli dipertahankan persis, tanpa
+          potong dan tanpa bar hitam. 9:16 = dipasang di kanvas 720×1280.</p>
+      </fieldset>
+
+      <button class="btn primary lg" id="processBtn">Mulai Proses</button>
+    </div>
+
+    <div id="progressBox" hidden>
+      <p class="progress-label" id="progressLabel">Menyiapkan mesin…</p>
+      <div class="progress" role="progressbar" aria-valuemin="0" aria-valuemax="100"
+           aria-valuenow="0" id="progressBarWrap">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+      <p class="progress-pct" id="progressPct">0%</p>
+    </div>
+
+    <p class="error-box" id="errorBox" role="alert" hidden></p>
+
+    <div id="resultBox" hidden>
+      <h3>Hasil</h3>
+      <div class="preview-wrap">
+        <video id="resultVideo" controls playsinline></video>
+        <img id="resultImg" alt="Hasil foto HD" hidden>
+      </div>
+      <table class="compare" id="compareTable">
+        <thead><tr><th></th><th>Sebelum</th><th>Sesudah</th></tr></thead>
+        <tbody>
+          <tr><th>Ukuran</th><td id="cmpSizeBefore">–</td><td id="cmpSizeAfter">–</td></tr>
+          <tr><th>Resolusi</th><td id="cmpResBefore">–</td><td id="cmpResAfter">–</td></tr>
+        </tbody>
+      </table>
+      <p class="savings" id="savingsLine"></p>
+      <div class="actions">
+        <button class="btn primary" id="downloadBtn">Unduh</button>
+        <button class="btn secondary" id="shareBtn">Bagikan</button>
+      </div>
+    </div>
+
+    <div id="partsBox" hidden>
+      <h3>Bagian-bagian</h3>
+      <ul class="part-list" id="partList"></ul>
+      <div class="actions">
+        <button class="btn primary" id="downloadAllBtn">Unduh Semua</button>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- S12 + S09 paywall modal (placeholder plans, no payment) -->
+<div class="modal-backdrop" id="paywallBackdrop" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="paywallTitle">
+    <h2 id="paywallTitle">Kuota gratis hari ini habis</h2>
+    <p>Kamu sudah memakai 3 proses gratis hari ini. Kuota kembali penuh
+      besok. Versi Premium (tanpa batas) sedang disiapkan:</p>
+    <div class="plan-row">
+      <span class="plan-name">Premium Bulanan</span>
+      <span class="plan-price">Segera hadir</span>
+    </div>
+    <div class="plan-row">
+      <span class="plan-name">Premium Tahunan</span>
+      <span class="plan-price">Segera hadir</span>
+    </div>
+    <button class="btn primary" disabled>Berlangganan — Segera Hadir</button>
+    <button class="btn ghost" id="paywallClose">Nanti Saja</button>
+  </div>
+</div>
+
+<script type="module" src="app.js?v=4"></script>
+</body>
+</html>
